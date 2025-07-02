@@ -5,11 +5,12 @@ import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { editJob, fetchRecruiterJobs } from '../lib/recruiterApi';
+import { Briefcase, FileText, MapPin, Layers, Globe, ClipboardList } from 'lucide-react';
 
 export default function EditJob() {
   const { id } = useParams();
   const { isRecruiter } = useAuth();
-  const [form, setForm] = useState({ title: '', description: '', specialization: '', governorate: '' });
+  const [form, setForm] = useState({ title: '', description: '', specialization: '', governorate: '', status: 'open', work_mode: 'onsite', job_type: 'full-time' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -29,7 +30,10 @@ export default function EditJob() {
           title: job.title,
           description: job.description,
           specialization: job.specialization,
-          governorate: job.governorate
+          governorate: job.governorate,
+          status: job.status || 'open',
+          work_mode: job.work_mode || 'onsite',
+          job_type: job.job_type || 'full-time'
         });
       } catch (err) {
         setError('Failed to load job.');
@@ -63,27 +67,44 @@ export default function EditJob() {
   }
 
   return (
-    <div className="container py-5">
-      <h2>Edit Job</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label>Title</label>
-          <input name="title" value={form.title} onChange={handleChange} className="form-control" />
-        </div>
-        <div className="mb-3">
-          <label>Description</label>
-          <textarea name="description" value={form.description} onChange={handleChange} className="form-control" />
-        </div>
-        <div className="mb-3">
-          <label>Specialization</label>
-          <input name="specialization" value={form.specialization} onChange={handleChange} className="form-control" />
-        </div>
-        <div className="mb-3">
-          <label>Governorate</label>
-          <input name="governorate" value={form.governorate} onChange={handleChange} className="form-control" />
-        </div>
-        <button type="submit" className="btn btn-primary">Save</button>
-      </form>
+    <div className="edit-job-bg">
+      <div className="edit-job-card">
+        <div className="edit-job-title">Edit Job</div>
+        <form onSubmit={handleSubmit}>
+          <label className="edit-job-label"><Briefcase size={18}/> Title</label>
+          <input name="title" value={form.title} onChange={handleChange} className="edit-job-input" />
+
+          <label className="edit-job-label"><FileText size={18}/> Description</label>
+          <textarea name="description" value={form.description} onChange={handleChange} className="edit-job-input" rows={4} />
+
+          <label className="edit-job-label"><Layers size={18}/> Specialization</label>
+          <input name="specialization" value={form.specialization} onChange={handleChange} className="edit-job-input" />
+
+          <label className="edit-job-label"><MapPin size={18}/> Governorate</label>
+          <input name="governorate" value={form.governorate} onChange={handleChange} className="edit-job-input" />
+
+          <label className="edit-job-label"><ClipboardList size={18}/> Status</label>
+          <select name="status" value={form.status} onChange={handleChange} className="edit-job-select">
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </select>
+
+          <label className="edit-job-label"><Globe size={18}/> Work Mode</label>
+          <select name="work_mode" value={form.work_mode} onChange={handleChange} className="edit-job-select">
+            <option value="onsite">Onsite</option>
+            <option value="remotely">Remotely</option>
+          </select>
+
+          <label className="edit-job-label"><ClipboardList size={18}/> Job Type</label>
+          <select name="job_type" value={form.job_type} onChange={handleChange} className="edit-job-select">
+            <option value="full-time">Full-time</option>
+            <option value="part-time">Part-time</option>
+            <option value="by task">By Task</option>
+          </select>
+
+          <button type="submit" className="edit-job-btn">Save</button>
+        </form>
+      </div>
     </div>
   );
 }

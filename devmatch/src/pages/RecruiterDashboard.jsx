@@ -50,6 +50,8 @@ export default function RecruiterDashboard() {
   const jobsPerPage = 6;
   const totalPages = Math.ceil(jobs.length / jobsPerPage);
   const paginatedJobs = jobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
+  const [deleteJobId, setDeleteJobId] = useState(null); // For delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Use localStorage to persist isPaid after payment
   useEffect(() => {
@@ -318,14 +320,15 @@ export default function RecruiterDashboard() {
 
   const handleDeleteJob = async (jobId) => {
     try {
-      if (window.confirm('Are you sure you want to delete this job?')) {
-        await axiosInstance.delete(`/jobs/${jobId}`);
-        setJobs(prev => prev.filter(job => job._id !== jobId && job.id !== jobId));
-        // alert removed
-      }
+      await axiosInstance.delete(`/jobs/${jobId}`);
+      setJobs(prev => prev.filter(job => job._id !== jobId && job.id !== jobId));
+      setShowDeleteModal(false);
+      setDeleteJobId(null);
     } catch (err) {
       console.error('Error deleting job:', err);
       setError('Failed to delete job');
+      setShowDeleteModal(false);
+      setDeleteJobId(null);
     }
   };
 
@@ -351,9 +354,7 @@ export default function RecruiterDashboard() {
                 <i className="bi bi-briefcase me-2"></i>
                 Recruiter Dashboard
               </h1>
-              <span className="badge bg-light text-primary">
-                Welcome, {user?.name}
-              </span>
+            
             </div>
           </div>
         </div>
@@ -714,9 +715,20 @@ export default function RecruiterDashboard() {
                                   <i className="bi bi-people me-1"></i>
                                   View Applications
                                 </button>
+                                <button
+                                  className="btn btn-outline-secondary btn-sm ms-2"
+                                  onClick={() => navigate(`/edit-job/${job._id || job.id}`)}
+                                  title="Edit Job"
+                                >
+                                  <i className="bi bi-pencil-square me-1"></i>
+                                  Edit
+                                </button>
                                 <button 
                                   className="btn btn-outline-danger btn-sm"
-                                  onClick={() => handleDeleteJob(job._id || job.id)}
+                                  onClick={() => {
+                                    setDeleteJobId(job._id || job.id);
+                                    setShowDeleteModal(true);
+                                  }}
                                 >
                                   <i className="bi bi-trash me-1"></i>
                                   Delete
@@ -889,6 +901,48 @@ export default function RecruiterDashboard() {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setDeleteJobId(null);
+                  }}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to delete this job?</p>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setDeleteJobId(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-danger" 
+                  onClick={() => handleDeleteJob(deleteJobId)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>

@@ -60,11 +60,37 @@ export default function Navbar({ rightElement, lang = 'en' }) {
             {isAuthenticated && (
               <>
                 <li className="nav-item"><Link to="/jobs" className="nav-link">{t.jobs}</Link></li>
-                <li className="nav-item"><a href="/chat" className="nav-link">{t.community}</a></li>
-                <li className="nav-item">
-                  <a href="/privatechats" className="nav-link d-flex align-items-center gap-2">
-                    <FontAwesomeIcon icon={faComments} style={{ color: '#1a73e8' }} />
-                    <span style={{ color: '#1a73e8', fontWeight: 600 }}>Chatty</span>
+                <li className="nav-item"><a className="nav-link" href="/chat">Community</a></li>
+                <li className="nav-item position-relative">
+                  <a 
+                    className="nav-link d-flex align-items-center gap-2" 
+                    href="/privatechats"
+                    style={{
+                      padding: '8px 12px',
+                      fontWeight: '500',
+                      position: 'relative'
+                    }}
+                  >
+                    <FontAwesomeIcon 
+                      icon={faComments} 
+                      style={{ 
+                        color: '#1a73e8',
+                        fontSize: '1.1rem',
+                        transition: 'all 0.2s ease'
+                      }} 
+                    />
+                    <span 
+                      style={{
+                        color: '#1a73e8',
+                        fontWeight: '600',
+                        letterSpacing: '0.5px'
+                      }}
+                    >
+                      Chatty
+                    </span>
+                    {unreadCount > 0 && (
+                      <span className="chatty-badge">{unreadCount}</span>
+                    )}
                   </a>
                 </li>
                 <li className="nav-item"><a href="/Freelancers" className="nav-link">{t.freelancers}</a></li>
