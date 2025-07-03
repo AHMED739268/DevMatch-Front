@@ -154,4 +154,17 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  setAuthUser: (user) => set({ authUser: user }),
+
+  fetchUser: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await axiosInstance.get('/auth/me', { params: { token } });
+      set({ authUser: res.data });
+    } catch (err) {
+      // Optionally handle error (e.g., logout or show error)
+    }
+  },
+
 }));

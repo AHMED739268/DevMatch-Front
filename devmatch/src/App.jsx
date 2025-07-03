@@ -44,12 +44,19 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { LanguageProvider } from "./components/LanguageContext";
+import ProgrammerExam from "./components/ProgrammerExam";
+import RequireExamPass from "./components/RequireExamPass";
 
 
 function AppContent() {
   const { theme } = useThemeStore();
   const { user } = useAuth();
   const { connectSocket } = useAuthStore();
+  const fetchUser = useAuthStore((state) => state.fetchUser);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   useEffect(() => {
     if (user) {
@@ -77,9 +84,9 @@ function AppContent() {
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/jobs" element={<JobsPage />} />
-          <Route path="/jobs/:id" element={<JobDetails />} />
-          <Route path="/jobs/:id/apply" element={<JobApplication />} />
+          <Route path="/jobs" element={<RequireExamPass><JobsPage /></RequireExamPass>} />
+          <Route path="/jobs/:id" element={<RequireExamPass><JobDetails /></RequireExamPass>} />
+          <Route path="/jobs/:id/apply" element={<RequireExamPass><JobApplication /></RequireExamPass>} />
           <Route path="/recruiter-dashboard" element={<RecruiterDashboard />} />
           <Route path="/post-job" element={<PostJob />} />
           <Route path="/complete-profile" element={<CompleteProfile />} />
@@ -94,6 +101,7 @@ function AppContent() {
           <Route path="/edit-job/:id" element={<EditJob />} />
           <Route path="/following" element={<FollowingPage />} />
           <Route path="/my-applications" element={<ApplicationsPage />} />
+          <Route path="/exam" element={<ProgrammerExam />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
