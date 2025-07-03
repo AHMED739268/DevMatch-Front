@@ -294,7 +294,7 @@ export default function ChatPage() {
                       onSelect={() => handleSelectMessage(message)}
                       onEdit={handleEditMessage}
                       onDelete={handleDeleteMessage}
-                      currentUserId={currentUser?.id}
+                      currentUserId={currentUser?._id || currentUser?.id}
                     />
                   ))}
                 </AnimatePresence>
@@ -354,7 +354,7 @@ export default function ChatPage() {
                     onClose={() => setShowComments(false)}
                     onEditComment={handleEditComment}
                     onDeleteComment={handleDeleteComment}
-                    currentUserId={currentUser?.id}
+                    currentUserId={currentUser?._id || currentUser?.id}
                   />
                 </motion.div>
               </Col>

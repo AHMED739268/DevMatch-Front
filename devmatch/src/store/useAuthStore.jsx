@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.jsx";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 import {useChatStore} from './useChatStore.jsx'
 import { getUserFromStorage, saveUserToStorage, clearUserFromStorage, getUserId } from '../utils/userUtils';
 
@@ -57,6 +58,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       await axiosInstance.post("/auth/logout");
       clearUserFromStorage();
+      useNavigate('/login');
       set({ authUser: null, onlineUsers: [] });
       toast.success("Logged out successfully");
       get().disconnectSocket();

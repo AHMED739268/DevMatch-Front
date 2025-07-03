@@ -11,11 +11,11 @@ const Navbarchat = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
-      // Even if logout fails, navigate to home
-      navigate("/");
+      // Even if logout fails, navigate to login
+      navigate("/login");
     }
   };
 

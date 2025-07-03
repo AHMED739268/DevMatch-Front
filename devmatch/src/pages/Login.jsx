@@ -126,7 +126,7 @@ export default function Login() {
       });
       const { user, token } = response.data;
       localStorage.setItem('token', token);
-      login(user);
+      await login(user, token);
       if (user.role === 'recruiter') {
         if (!user.isProfileComplete) {
           navigate('/complete-profile');

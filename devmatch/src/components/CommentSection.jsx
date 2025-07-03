@@ -81,7 +81,7 @@ export default function CommentSection({
                       <small className="text-muted me-2">
                         {format(new Date(comment.createdAt), 'h:mm a')}
                       </small>
-                      {comment.user?._id === currentUserId && (
+                      {String(comment.user?._id || comment.user?.id) === String(currentUserId) && (
                         <Dropdown>
                           <Dropdown.Toggle variant="link" className="p-0">
                             <FiEdit size={16} className="text-primary" />
@@ -128,7 +128,7 @@ export default function CommentSection({
                   ) : (
                     <div className="d-flex align-items-center justify-content-between">
                       <p className="mb-0 text-dark flex-grow-1">{comment.text}</p>
-                      {String(comment.user?._id) === String(currentUserId) && (
+                      {String(comment.user?._id || comment.user?.id) === String(currentUserId) && (
                         <div className="d-flex gap-2 ms-2">
                           <button
                             className="btn btn-link p-0 text-primary"

@@ -86,7 +86,7 @@ const ApplicationsList = () => {
   };
 
   useEffect(() => {
-    if (currentUser?.id) {
+    if (currentUser?._id || currentUser?.id) {
       fetchApplications();
     }
   }, [currentUser, page]);

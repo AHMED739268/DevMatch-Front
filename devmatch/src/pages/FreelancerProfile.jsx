@@ -117,7 +117,7 @@ const FreelancerProfile = () => {
               <MapPin size={16} className="me-1" /> {user.location}
             </p>
 
-            {currentUser && currentUser.id !== id && (
+            {currentUser && String(currentUser._id || currentUser.id) !== String(id) && (
               <button
                 onClick={handleFollowToggle}
                 className={`btn position-absolute top-0 end-0 m-3 d-flex align-items-center shadow-sm ${

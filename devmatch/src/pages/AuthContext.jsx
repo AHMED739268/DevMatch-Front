@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
+import axios from 'axios';
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -27,11 +29,24 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (userData) => {
+  const fetchUserFromBackend = async (token) => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/auth/me', { params: { token } });
+      setUser(res.data);
+      localStorage.setItem('devmatch_user', JSON.stringify(res.data));
+    } catch (error) {
+      // Optionally handle error (logout or show error)
+    }
+  };
+
+  const login = async (userData, token) => {
     setUser(userData);
     localStorage.setItem('devmatch_user', JSON.stringify(userData));
-     const { connectSocket } = useAuthStore.getState();
-      connectSocket(); 
+    const { connectSocket } = useAuthStore.getState();
+    connectSocket();
+    if (token) {
+      await fetchUserFromBackend(token);
+    }
   };
 
   const logout = () => {
