@@ -67,7 +67,7 @@ export default function ChatMessage({
                 <Card.Title className="mb-0 text-primary">
                   {message.user?.name || 'Unknown User'}
                   {/* Owner indicator badge */}
-                  {isOwner && <span className="badge bg-success ms-2">OWNER</span>}
+                  {isOwner && <span className="badge bg-success ms-2">Author</span>}
                 </Card.Title>
                 <div className="d-flex align-items-center gap-2">
                   <small className="text-muted me-2">

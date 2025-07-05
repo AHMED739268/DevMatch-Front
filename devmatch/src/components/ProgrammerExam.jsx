@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/exam.css';
 import Navbar from '../components/Navbar.jsx'
+
 const PASS_MARK = 0.7;
 
 const ProgrammerExam = () => {
@@ -26,7 +27,6 @@ const ProgrammerExam = () => {
   const logout = useAuthStore((state) => state.logout);
   const setAuthUser = useAuthStore((state) => state.setAuthUser);
 
-  // Animation for fail
   useEffect(() => {
     if (submitted && !serverResult?.examPassed && !serverResult?.blocked) {
       setShake(true);
@@ -35,7 +35,6 @@ const ProgrammerExam = () => {
     }
   }, [submitted, serverResult]);
 
-  // Blocked: logout and redirect
   useEffect(() => {
     if (serverResult?.blocked && serverResult.examAttempts >= 3) {
       setTimeout(() => {
@@ -47,7 +46,6 @@ const ProgrammerExam = () => {
     }
   }, [serverResult, logout, navigate]);
 
-  // Passed: show modal, toast, and redirect
   useEffect(() => {
     if (serverResult?.examPassed) {
       setShowPassModal(true);
@@ -103,30 +101,23 @@ const ProgrammerExam = () => {
     }
   };
 
-  // Progress bar
   const progress = Math.round(
     (answers.filter((a) => a !== null).length / questions.length) * 100
   );
 
-  // Card classes
   const cardClass = [
-    'max-w-2xl w-full bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 transition-all duration-300',
+    'max-w-4xl w-full bg-white dark:bg-gray-900 rounded-3xl shadow-2xl px-8 py-12 transition-all duration-300',
     'border-0',
     'flex flex-col items-center',
     shake ? 'animate-shake' : '',
   ].join(' ');
 
-  // Option button style
   const optionClass = (selected) =>
     `exam-option${selected ? ' selected' : ''}`;
 
-  // Modal overlay style
   const modalOverlay = "exam-modal-overlay";
-
-  // Modal content style
   const modalContent = "exam-modal-content";
 
-  // Blocked
   if (serverResult?.blocked) {
     return (
       <div className={modalOverlay}>
@@ -145,7 +136,6 @@ const ProgrammerExam = () => {
     );
   }
 
-  // Passed
   if (serverResult?.examPassed) {
     return (
       <>
@@ -166,7 +156,6 @@ const ProgrammerExam = () => {
     );
   }
 
-  // Failed (not blocked)
   if (submitted && !serverResult?.examPassed && !serverResult?.blocked) {
     return (
       <div className={modalOverlay}>
@@ -183,84 +172,85 @@ const ProgrammerExam = () => {
               Attempts left: {3 - (serverResult.examAttempts || 0)}
             </p>
           )}
-          <button
-            className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition"
-            onClick={() => {
-              setSubmitted(false);
-              setAnswers(Array(5).fill(null));
-              setScore(0);
-              setServerResult(null);
-            }}
-          >
-            <FiEdit3 className="inline mr-2" />
-            Retry
-          </button>
+       <button
+        className="exam-submit-btn mt-6 flex items-center justify-center"
+        onClick={() => {
+          setSubmitted(false);
+          setAnswers(Array(5).fill(null));
+          setScore(0);
+          setServerResult(null);
+        }}
+      >
+        <FiEdit3 className="mr-2" />
+        Retry
+      </button>
+
         </div>
       </div>
     );
   }
 
-  // Main exam form
   return (
     <>
-    <Navbar />
-   
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex items-center justify-center ml-0 md:ml-20 lg:ml-40">
-      <form onSubmit={handleSubmit} className={cardClass}>
-        <div className="w-full flex items-center justify-center mb-8">
-          
-          <h2 className="text-4xl font-extrabold text-blue-700 text-center tracking-tight">
-            Programmer Basic Exam
-          </h2>
-        </div>
-        <div className="w-full mb-8">
-          <div className="w-full bg-blue-200 rounded-full h-3 mb-2">
+      <Navbar />
+
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex justify-center px-2 py-8">
+        <form onSubmit={handleSubmit} className={`exam-container ${cardClass}`}>
+          <div className="w-full flex items-center justify-center mb-8">
+            <h2 className="text-4xl font-extrabold text-blue-700 text-center tracking-tight">
+              Programmer Basic Exam
+            </h2>
+          </div>
+
+          <div className="w-full mb-10">
+            <div className="w-full bg-blue-200 rounded-full h-3 mb-2">
+              <div
+                className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <div className="text-sm text-blue-700 text-right font-semibold">
+              {progress}% completed
+            </div>
+          </div>
+
+          {questions.map((q, qIdx) => (
             <div
-              className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-          <div className="text-sm text-blue-700 text-right font-semibold">{progress}% completed</div>
-        </div>
-        {questions.map((q, qIdx) => (
-          <div
-            key={qIdx}
-            className="w-full mb-8 p-6 bg-blue-50 dark:bg-blue-900 rounded-2xl shadow flex flex-col ml-0 md:ml-12 lg:ml-24"
-          >
-            <div className="flex items-center mb-4">
-              <div className="w-2 h-8 bg-blue-600 rounded-r-lg mr-3"></div>
-              <span className="font-bold text-lg text-blue-700 dark:text-blue-200 flex items-center">
-                <FiHelpCircle className="mr-2" />
-                {qIdx + 1}. {q.question}
-              </span>
+              key={qIdx}
+              className="w-full mb-10 p-6 bg-blue-50 dark:bg-blue-900 rounded-2xl shadow flex flex-col"
+            >
+              <div className="flex items-center mb-4">
+                <div className="w-2 h-8 bg-blue-600 rounded-r-lg mr-3"></div>
+                <span className="font-bold text-lg text-blue-700 dark:text-blue-200 flex items-center">
+                  <FiHelpCircle className="mr-2" />
+                  {qIdx + 1}. {q.question}
+                </span>
+              </div>
+              <div className="exam-question-options">
+                {q.options.map((opt, oIdx) => (
+                  <label key={oIdx} className={optionClass(answers[qIdx] === oIdx)}>
+                    <input
+                      type="radio"
+                      name={`q${qIdx}`}
+                      value={oIdx}
+                      checked={answers[qIdx] === oIdx}
+                      onChange={() => handleOptionChange(qIdx, oIdx)}
+                      required
+                      className="hidden"
+                    />
+                    {opt}
+                  </label>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {q.options.map((opt, oIdx) => (
-                <label key={oIdx} className={optionClass(answers[qIdx] === oIdx)}>
-                  <input
-                    type="radio"
-                    name={`q${qIdx}`}
-                    value={oIdx}
-                    checked={answers[qIdx] === oIdx}
-                    onChange={() => handleOptionChange(qIdx, oIdx)}
-                    required
-                    className="hidden"
-                  />
-                  {opt}
-                </label>
-              ))}
-            </div>
-          </div>
-        ))}
-        <button
-          type="submit"
-          className="w-full py-3 mt-2 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl shadow-lg transition text-lg"
-        >
-          Submit
-        </button>
-      </form>
-      <ToastContainer />
-    </div>
+          ))}
+
+          <button type="submit" className="exam-submit-btn">
+            Submit
+          </button>
+        </form>
+        <ToastContainer />
+      </div>
     </>
   );
 };
